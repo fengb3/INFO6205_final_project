@@ -6,6 +6,7 @@ import com.Wordle.WordleSystem;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class GuessPattern
 
     private static HashMap<String, HashMap<String, GuessStatus[]>> _map;
 
-    public static void Load()
+    public static void LoadPossiblePatterns()
     {
         if (_possiblePatterns != null)
         {
@@ -80,7 +81,7 @@ public class GuessPattern
     {
         if (_possiblePatterns == null)
         {
-            Load();
+            LoadPossiblePatterns();
         }
 
         return _possiblePatterns;
@@ -102,22 +103,104 @@ public class GuessPattern
         else
         {
             // fill result with NOT_IN_THE_ANSWER
-            for (int i = 0; i < result.length; i++)
+            Arrays.fill(result, GuessStatus.NOT_IN_THE_ANSWER);
+        }
+
+        return result;
+    }
+
+    public static GuessStatus[] GetPatternWithoutReadingMatrix(char[] word, char[] wordToCheck)
+    {
+        boolean[][] equalityGrid = new boolean[5][5];
+
+        GuessStatus[] result = new GuessStatus[5];
+
+        for (int i = 0; i < word.length; i++)
+        {
+            for (int j = 0; j < wordToCheck.length; j++)
             {
-                result[i] = GuessStatus.NOT_IN_THE_ANSWER;
+                if (word[i] == wordToCheck[j])
+                {
+                    equalityGrid[i][j] = true;
+                }
+            }
+        }
+
+        for(int i = 0; i < 5; i++)
+        {
+            if(equalityGrid[i][i])
+            {
+                result[i] = GuessStatus.RIGHT_PLACE;
+
+                for(int k = 0; k < 5; k++)
+                {
+                    equalityGrid[k][i] = false;
+                    equalityGrid[i][k] = false;
+                }
+            }
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                if (equalityGrid[i][j])
+                {
+                    result[i] = GuessStatus.MIS_PLACE;
+
+                    for (int k = 0; k < 5; k++)
+                    {
+                        equalityGrid[k][j] = false;
+                        equalityGrid[i][k] = false;
+                    }
+                }
             }
         }
 
         return result;
     }
 
-    public static boolean IsMatchPatten(char[] word, char[] wordToCheck, GuessStatus[] pattern)
+    public static List<String> GetWordListMatchPattern(String word, List<String> wordList, List<GuessStatus> pattern)
+    {
+        List<String> result = new ArrayList<>();
+
+        String lower = word.toLowerCase();
+
+        for (String wordToCheck : wordList)
+        {
+            if (!IsMatchPattern(wordToCheck,lower, pattern))
+            {
+                continue;
+            }
+
+            result.add(wordToCheck);
+        }
+
+        return result;
+    }
+
+    public static boolean IsMatchPattern(char[] word, char[] wordToCheck, GuessStatus[] pattern)
     {
         GuessStatus[] wordPattern = GetPattern(word, wordToCheck);
 
         for (int i = 0; i < wordPattern.length; i++)
         {
             if (wordPattern[i] != pattern[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean IsMatchPattern(String word, String wordToCheck, List<GuessStatus> pattern)
+    {
+        GuessStatus[] wordPattern = GetPattern(word.toCharArray(), wordToCheck.toCharArray());
+
+        for (int i = 0; i < wordPattern.length; i++)
+        {
+            if (wordPattern[i] != pattern.get(i))
             {
                 return false;
             }
@@ -394,11 +477,14 @@ public class GuessPattern
 
             int lineCount = 0;
 
+            int size = WordleSystem.GetPossibleWords().size() * WordleSystem.GetPossibleWords().size();
+
+
             while (line != null)
             {
                 lineCount++;
 
-                Log.Println("Reading pattern matrix from file " + lineCount + " th line : " + line);
+                Log.Println("Reading pattern matrix from file (" + lineCount + " / " + size +") " + line);
 
                 String[] parts = line.split(",");
                 String word = parts[0];
@@ -437,9 +523,7 @@ public class GuessPattern
 
     public static void main(String[] args)
     {
-
         LoadPattenMatrix(false);
-
     }
 
 }

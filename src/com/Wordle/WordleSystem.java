@@ -103,11 +103,13 @@ public class WordleSystem {
             return null;
         }
 
-        return GuessPattern.GetPattern(wordle.Word, word.toCharArray());
+        GuessPattern.GuessStatus[] guessPattern = GuessPattern.GetPattern(wordle.Word, word.toLowerCase().toCharArray());
+
+        return guessPattern;
     }
 
     public static boolean IsPossibleWord(String word) {
-        return _possibleWords.contains(word.toLowerCase());
+        return GetPossibleWords().contains(word.toLowerCase());
     }
 
     public static boolean IsPossibleWord(char[] chars) {

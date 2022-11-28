@@ -1,5 +1,6 @@
 package com.GUI;
 
+import com.Hacker.Entropy;
 import com.Hacker.GuessPattern;
 import com.Helper.Log;
 import com.Wordle.Wordle;
@@ -14,7 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class WindowMain extends JFrame {
+public class WindowWordle extends JFrame {
 
     private JPanel panelMain;
     private JButton submitButton;
@@ -24,8 +25,24 @@ public class WindowMain extends JFrame {
 
     private ArrayList<ArrayList<JTextField>> textFields = new ArrayList<>();
 
-    public WindowMain() {
+    public WindowWordle() {
         initComponents();
+    }
+
+    private void initComponents() {
+        setContentPane(panelMain);
+        setTitle("Wordle");
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        panelContent.setLayout(new GridLayout(Wordle.MAX_TRIES,Wordle.WORD_LENGTH));
+
+        setUpWordleList();
+
+        setSize(600,800);
+        setVisible(true);
+
+        // region button listeners
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -44,16 +61,11 @@ public class WindowMain extends JFrame {
                 OnWordleHackerButtonClicked();
             }
         });
+        // endregion
     }
 
-    private void initComponents() {
-        setContentPane(panelMain);
-        setTitle("Wordle");
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
-
-        panelContent.setLayout(new GridLayout(Wordle.MAX_TRIES,Wordle.WORD_LENGTH));
-
+    private void setUpWordleList()
+    {
         for (int i = 0; i < Wordle.MAX_TRIES; i++) {
             ArrayList<JTextField> row = new ArrayList<>();
             for (int j = 0; j < Wordle.WORD_LENGTH; j++) {
@@ -64,8 +76,6 @@ public class WindowMain extends JFrame {
                 textField.setFont(new Font("Arial", Font.BOLD, 40));
                 panelContent.add(textField);
                 row.add(textField);
-
-//                textField.requestFocus();
 
                 int copyOfj = j;
                 int copyOfi = i;
@@ -100,7 +110,7 @@ public class WindowMain extends JFrame {
 
                         if(currentText.length() == 0)
                         {
-                            int previousJ = copyOfj - 1 >= 0 ? copyOfj - 1 : 0;
+                            int previousJ = Math.max(copyOfj - 1, 0);
 
                             textFields.get(copyOfi).get(previousJ).requestFocus();
                         }
@@ -109,9 +119,6 @@ public class WindowMain extends JFrame {
             }
             textFields.add(row);
         }
-
-        setSize(600,400);
-        setVisible(true);
     }
 
     private void OnSubmitButtonClicked()
@@ -132,7 +139,8 @@ public class WindowMain extends JFrame {
     private void OnWordleHackerButtonClicked()
     {
         Log.Println("Wordle Hacker button clicked");
-        // TODO: Implement Wordle Hacker
+
+        WindowHacker windowHacker = new WindowHacker();
     }
 
     private void Reset() {
@@ -223,5 +231,10 @@ public class WindowMain extends JFrame {
         nextRow.get(0).requestFocus();
     }
 
-
+    public static void main(String[] args) {
+        GuessPattern.LoadPossiblePatterns();
+        GuessPattern.LoadPattenMatrix(false);
+        Entropy.LoadInfoMap(false);
+        new WindowWordle();
+    }
 }

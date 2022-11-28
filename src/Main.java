@@ -1,5 +1,5 @@
 
-import com.GUI.WindowMain;
+import com.GUI.WindowWordle;
 import com.Wordle.Wordle;
 
 public class Main {
@@ -17,7 +17,7 @@ public class Main {
 //
 //        boolean correct =  WordleSystem.CheckGuess(w, guess);
 
-        WindowMain mw = new WindowMain();
+        WindowWordle mw = new WindowWordle();
 
     }
 }

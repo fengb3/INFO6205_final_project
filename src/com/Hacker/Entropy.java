@@ -11,7 +11,7 @@ import java.util.*;
 public class Entropy
 {
 
-    private static HashMap<String, List<Double>> _entropyMap = new HashMap<>();
+    private static HashMap<String, List<Double>> _infoMap;
 
     public static List<Double> CalcInfo(char[] word, List<String> fromList)
     {
@@ -27,7 +27,7 @@ public class Entropy
             {
                 char[] wordToCheckArray = wordToCheck.toCharArray();
 
-                if (!GuessPattern.IsMatchPatten(word, wordToCheckArray, pattern))
+                if (!GuessPattern.IsMatchPattern(word, wordToCheckArray, pattern))
                 {
                     continue;
                 }
@@ -48,13 +48,12 @@ public class Entropy
         return infoList;
     }
 
-    public static HashMap<String, List<Double>> CalcEntropyMap(List<String> fromList)
+    public static HashMap<String, List<Double>> CalcInfoMap(List<String> fromList)
     {
         HashMap<String, List<Double>> entropyMap = new HashMap<>();
 
         for (int i = 0; i < fromList.size(); i++)
         {
-
             String word = fromList.get(i);
 
             List<Double> infoList = CalcInfo(word.toCharArray(), fromList);
@@ -67,17 +66,17 @@ public class Entropy
         return entropyMap;
     }
 
-    public static HashMap<String, List<Double>> GetEntropyMap()
+    public static HashMap<String, List<Double>> GetInfoMap()
     {
-        if (_entropyMap == null)
+        if (_infoMap == null)
         {
-            LoadEntropyMap(false);
+            LoadInfoMap(false);
         }
 
-        return _entropyMap;
+        return _infoMap;
     }
 
-    public static void LoadEntropyMap(boolean regenerate)
+    public static void LoadInfoMap(boolean regenerate)
     {
         // start timing
         long startTime = System.currentTimeMillis();
@@ -98,12 +97,12 @@ public class Entropy
         // calculate time elapsed
         long timeElapsed = endTime - startTime;
 
-        System.out.println("Load Entropy Done, Time Usage: " + timeElapsed + " ms");
+        System.out.println("Load Entropy Done, Time Usage: " + timeElapsed + " ms, regenerate: " + regenerate);
     }
 
     public static void CreateAllEntropyMap()
     {
-        _entropyMap = CalcEntropyMap(WordleSystem.GetPossibleWords());
+        _infoMap = CalcInfoMap(WordleSystem.GetPossibleWords());
     }
 
     public static void WriteEntropyMapToFile()
@@ -116,15 +115,16 @@ public class Entropy
             OutputStreamWriter osw = new OutputStreamWriter(fis);
             BufferedWriter bw = new BufferedWriter(osw);
 
-            int total = _entropyMap.size();
+            int total = _infoMap.size();
             int i = 0;
 
-            for (Map.Entry<String, List<Double>> entry : _entropyMap.entrySet())
+            for (Map.Entry<String, List<Double>> entry : _infoMap.entrySet())
             {
                 String key = entry.getKey();
                 List<Double> value = entry.getValue();
 
-                String line = key + "," + String.join(",", value.stream().map(Object::toString).toArray(String[]::new));
+                String line = key + "," +
+                              String.join(",", value.stream().map(Object::toString).toArray(String[]::new));
 
                 bw.write(line);
                 bw.newLine();
@@ -141,6 +141,8 @@ public class Entropy
 
     public static void ReadEntropyMapFromFile()
     {
+        _infoMap = new HashMap<>();
+
         try
         {
             Log.Println("Read Entropy Map From File");
@@ -151,6 +153,8 @@ public class Entropy
 
             String line;
             int i = 0;
+
+            int size = WordleSystem.GetPossibleWords().size();
 
             while ((line = br.readLine()) != null)
             {
@@ -165,11 +169,11 @@ public class Entropy
                     value.add(Double.parseDouble(lineSplit[j]));
                 }
 
-                _entropyMap.put(key, value);
+                _infoMap.put(key, value);
 
                 i++;
 
-                Log.Println("Reading entropy map from file " + i + " th line : " + key);
+                Log.Println("Reading entropy map from file (" + i + " / " + size + ") " + key);
             }
 
             br.close();
@@ -182,12 +186,9 @@ public class Entropy
 
     /**
      * run this to generate entropy map
-     * @param args
      */
     public static void main(String[] args)
     {
-
-        LoadEntropyMap(false);
-
+        LoadInfoMap(true);
     }
 }
