@@ -336,11 +336,11 @@ public class WindowHacker extends JFrame
 
         _bitsLabels.get(_currentRow).setText(MathHelper.Log2(newInfoMap.size() / _currentWordList.size()) + " bits");
 
-        initEntropyList(20, newInfoMap);
-
         _textFields.get(_currentRow).forEach(textField -> textField.setEditable(false));
 
         _currentRow++;
+
+        initEntropyList(20, newInfoMap);
 
         _textFields.get(_currentRow).forEach(textField -> textField.setEditable(true));
 

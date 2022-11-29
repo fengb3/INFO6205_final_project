@@ -89,24 +89,7 @@ public class GuessPattern
 
     public static GuessStatus[] GetPattern(char[] word, char[] wordToCheck)
     {
-        GuessStatus[] result = new GuessStatus[5];
-
-        if (_map == null)
-        {
-            _map = GetPattenMatrix();
-        }
-
-        if (_map.containsKey(new String(word)) && _map.get(new String(word)).containsKey(new String(wordToCheck)))
-        {
-            result = _map.get(new String(word)).get(new String(wordToCheck));
-        }
-        else
-        {
-            // fill result with NOT_IN_THE_ANSWER
-            Arrays.fill(result, GuessStatus.NOT_IN_THE_ANSWER);
-        }
-
-        return result;
+        return GetPatternWithoutReadingMatrix(word, wordToCheck);
     }
 
     public static GuessStatus[] GetPatternWithoutReadingMatrix(char[] word, char[] wordToCheck)
@@ -114,6 +97,9 @@ public class GuessPattern
         boolean[][] equalityGrid = new boolean[5][5];
 
         GuessStatus[] result = new GuessStatus[5];
+
+        // fill result with NOT_IN_THE_ANSWER
+        Arrays.fill(result, GuessStatus.NOT_IN_THE_ANSWER);
 
         for (int i = 0; i < word.length; i++)
         {
@@ -146,7 +132,7 @@ public class GuessPattern
             {
                 if (equalityGrid[i][j])
                 {
-                    result[i] = GuessStatus.MIS_PLACE;
+                    result[j] = GuessStatus.MIS_PLACE;
 
                     for (int k = 0; k < 5; k++)
                     {
@@ -196,17 +182,7 @@ public class GuessPattern
 
     public static boolean IsMatchPattern(String word, String wordToCheck, List<GuessStatus> pattern)
     {
-        GuessStatus[] wordPattern = GetPattern(word.toCharArray(), wordToCheck.toCharArray());
-
-        for (int i = 0; i < wordPattern.length; i++)
-        {
-            if (wordPattern[i] != pattern.get(i))
-            {
-                return false;
-            }
-        }
-
-        return true;
+       return IsMatchPattern(word.toCharArray(), wordToCheck.toCharArray(), pattern.toArray(new GuessStatus[pattern.size()]));
     }
 
 
@@ -266,7 +242,7 @@ public class GuessPattern
     {
         HashMap<String, HashMap<String, GuessStatus[]>> map = new HashMap<>();
 
-        int[][][] matrix = CreatePatternMatrix(words1, words2);
+        int[][][] matrix = CreatePatternMatrix2(words1, words2);
 
         Log.Println(
                 "CreatePattenMap: " + words1.size() + " x " + words2.size() + " = " + matrix.length * matrix[0].length);
@@ -274,7 +250,7 @@ public class GuessPattern
         for (int i = 0; i < words1.size(); i++)
         {
             String word1 = words1.get(i);
-            Log.Print("(" + i + "/" + words1.size() + ") " + word1);
+//            Log.Print("(" + i + "/" + words1.size() + ") " + word1);
 
             HashMap<String, GuessStatus[]> row = new HashMap<>();
 
@@ -282,7 +258,7 @@ public class GuessPattern
             {
                 String word2 = words2.get(j);
 
-                Log.Print("(" + j + "/" + words2.size() + ") " + word2);
+                Log.Print("(" + i + "/" + words1.size() + ") " + word1 + "(" + j + "/" + words2.size() + ") " + word2);
 
                 GuessStatus[] pattern = new GuessStatus[5];
 
@@ -303,9 +279,11 @@ public class GuessPattern
 
                 if (!isAllGray)
                 {
-                    Log.Println("put");
+                    Log.Print("put");
                     row.put(word2, pattern);
                 }
+
+                Log.Enter();
             }
 
             map.put(word1, row);
@@ -420,6 +398,30 @@ public class GuessPattern
         return pattern_matrix;
     }
 
+    public static int[][][] CreatePatternMatrix2(List<String> wordList1, List<String> wordList2)
+    {
+        int[][][] pattern_matrix = new int[wordList1.size()][wordList2.size()][5];
+
+        for (int i = 0; i < wordList1.size(); i++)
+        {
+            String word1 = wordList1.get(i);
+
+            for (int j = 0; j < wordList2.size(); j++)
+            {
+                String word2 = wordList2.get(j);
+
+                GuessStatus[] pattern = GetPatternWithoutReadingMatrix(word1.toCharArray(), word2.toCharArray());
+
+                for (int k = 0; k < 5; k++)
+                {
+                    pattern_matrix[i][j][k] = pattern[k].code;
+                }
+            }
+        }
+
+        return pattern_matrix;
+    }
+
     public static void WritePatternMatrixToFile(HashMap<String, HashMap<String, GuessStatus[]>> matrix)
     {
         try
@@ -523,7 +525,7 @@ public class GuessPattern
 
     public static void main(String[] args)
     {
-        LoadPattenMatrix(false);
+        LoadPattenMatrix(true);
     }
 
 }

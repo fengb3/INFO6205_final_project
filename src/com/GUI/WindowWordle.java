@@ -140,7 +140,7 @@ public class WindowWordle extends JFrame {
     {
         Log.Println("Wordle Hacker button clicked");
 
-        WindowHacker windowHacker = new WindowHacker();
+        new WindowHacker();
     }
 
     private void Reset() {

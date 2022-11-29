@@ -1,23 +1,32 @@
 
+import com.GUI.WindowHacker;
 import com.GUI.WindowWordle;
+import com.Hacker.GuessPattern;
 import com.Wordle.Wordle;
+import com.Wordle.WordleSystem;
 
 public class Main {
 
     static Wordle wordle;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
 
-//        wordle = WordleSystem.Instance();
+//        //        wordle = WordleSystem.Instance();
+//        //
+//        //        String guess = "tares";
+//        //
+//        //        Wordle w = WordleSystem.Instance();
+//        //        w.Word = "dicer".toCharArray();
 //
-//        String guess = "wider";
+//        GuessPattern.GuessStatus[] statuses = GuessPattern.GetPattern("padle".toCharArray(), "olden".toCharArray());
 //
-//        Wordle w = WordleSystem.Instance();
-//        w.Word = "wider".toCharArray();
+//        for (GuessPattern.GuessStatus status : statuses)
+//        {
+//            System.out.println(status);
 //
-//        boolean correct =  WordleSystem.CheckGuess(w, guess);
+//        }
 
-        WindowWordle mw = new WindowWordle();
-
+        new WindowHacker();
     }
 }
