@@ -1,5 +1,6 @@
 package com.GUI;
 
+import com.Const.Const;
 import com.Hacker.Entropy;
 import com.Hacker.GuessPattern;
 import com.Helper.Log;
@@ -190,14 +191,14 @@ public class WindowWordle extends JFrame {
             switch (guessStatus[i])
             {
                 case RIGHT_PLACE:
-                    textFields.get(currentRow).get(i).setBackground(Color.green);
+                    textFields.get(currentRow).get(i).setBackground(Const.DarkGreen);
                     break;
                 case MIS_PLACE:
-                    textFields.get(currentRow).get(i).setBackground(Color.yellow);
+                    textFields.get(currentRow).get(i).setBackground(Const.Yellow);
                     break;
                 case NOT_IN_THE_ANSWER:
                 default:
-                    textFields.get(currentRow).get(i).setBackground(Color.gray);
+                    textFields.get(currentRow).get(i).setBackground(Const.Gray);
                     break;
             }
         }

@@ -1,9 +1,11 @@
 package com.GUI;
 
+import com.Const.Const;
 import com.Hacker.Entropy;
 import com.Hacker.GuessPattern;
 import com.Helper.Log;
 import com.Helper.MathHelper;
+import com.Helper.StringHelper;
 import com.Wordle.Wordle;
 import com.Wordle.WordleSystem;
 
@@ -257,7 +259,11 @@ public class WindowHacker extends JFrame
 
         setCurrentWordList(new ArrayList<>(entropyMap2.keySet()));
 
-        _possLabels.get(_currentRow).setText(entropyMap3.size() + " possible words");
+        _possLabels.get(_currentRow).setText(
+                entropyMap3.size() +
+                " poss " +
+                StringHelper.format(MathHelper.Log2(entropyMap3.size()),2) +
+                " infos");
     }
 
     private void clearEntropyList()
@@ -293,15 +299,15 @@ public class WindowHacker extends JFrame
 
             GuessPattern.GuessStatus status;
 
-            if (Color.GRAY.equals(background))
+            if (Const.Gray.equals(background))
             {
                 status = GuessPattern.GuessStatus.NOT_IN_THE_ANSWER;
             }
-            else if (Color.GREEN.equals(background))
+            else if (Const.DarkGreen.equals(background))
             {
                 status = GuessPattern.GuessStatus.RIGHT_PLACE;
             }
-            else if (Color.YELLOW.equals(background))
+            else if (Const.Yellow.equals(background))
             {
                 status = GuessPattern.GuessStatus.MIS_PLACE;
             }
@@ -333,8 +339,7 @@ public class WindowHacker extends JFrame
 
         HashMap<String, List<Double>> newInfoMap = Entropy.CalcInfoMap(newWordList);
 
-
-        _bitsLabels.get(_currentRow).setText(MathHelper.Log2(newInfoMap.size() / _currentWordList.size()) + " bits");
+        _bitsLabels.get(_currentRow).setText(StringHelper.format(MathHelper.Log2( (double) _currentWordList.size() / newInfoMap.size()),2 )+ " bits");
 
         _textFields.get(_currentRow).forEach(textField -> textField.setEditable(false));
 
@@ -404,17 +409,17 @@ public class WindowHacker extends JFrame
 
             itemGrey.addActionListener(e ->
                                        {
-                                           setTextFieldColor(Color.GRAY);
+                                           setTextFieldColor(Const.Gray);
                                        });
 
             itemYellow.addActionListener(e ->
                                          {
-                                             setTextFieldColor(Color.YELLOW);
+                                             setTextFieldColor(Const.Yellow);
                                          });
 
             itemGreen.addActionListener(e ->
                                         {
-                                            setTextFieldColor(Color.GREEN);
+                                            setTextFieldColor(Const.DarkGreen);
                                         });
 
             add(itemGrey);

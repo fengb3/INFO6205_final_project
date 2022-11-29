@@ -27,6 +27,8 @@ public class Main {
 //
 //        }
 
-        new WindowHacker();
+//        new WindowHacker();
+
+        new WindowWordle();
     }
 }
