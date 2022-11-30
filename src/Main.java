@@ -31,4 +31,9 @@ public class Main {
 
         new WindowWordle();
     }
+
+//    private class ExecuteConfig
+//    {
+//        public
+//    }
 }
