@@ -26,5 +26,8 @@ hs_err_pid*
 replay_pid*
 
 # code generated datas
-data/entropy_map_short.txt
+data/entropy_map.txt
 data/patten_matrix.txt
+data/entropy_map_short.txt
+data/entropy_map.txt
+data/entropy_map.txt

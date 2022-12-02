@@ -2,13 +2,18 @@ package com.Helper;
 
 public class MathHelper
 {
-
-    public static double LogBase(double base, double value)
+    public static Double logBase(Double base, Double number)
     {
-        return Math.log(value) / Math.log(base);
+        return Math.log(number) / Math.log(base);
     }
 
-    public static double Log2(double n) {
-        return LogBase(2, n);
+    public static Double safeLog2(Double number)
+    {
+        if(number <= 0)
+        {
+            return 0.0;
+        }
+
+        return logBase(2.0, number);
     }
 }
