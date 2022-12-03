@@ -16,4 +16,14 @@ public class MathHelper
 
         return logBase(2.0, number);
     }
+
+    public static Double sigmoid(Double x)
+    {
+        return 1 / (1 + Math.pow(Math.E, -x));
+    }
+
+    public static int getRandomInt(int i, int i1)
+    {
+        return (int) (Math.random() * (i1 - i + 1) + i);
+    }
 }

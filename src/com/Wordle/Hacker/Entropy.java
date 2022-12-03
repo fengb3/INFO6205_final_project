@@ -120,6 +120,8 @@ public class Entropy
                 Log.ProgressBar("Saving info map", i, total);
                 i++;
             }
+
+            bw.close();
             Log.ClearConsole();
         }
         catch (IOException e)
@@ -153,6 +155,8 @@ public class Entropy
                 Log.ProgressBar("Reading info map", i, size);
                 i++;
             }
+
+            br.close();
             Log.ClearConsole();
         }
         catch (IOException e)
@@ -161,7 +165,7 @@ public class Entropy
         }
     }
 
-    static void loadInfoMap(boolean regenerate)
+    public static void loadInfoMap(boolean regenerate)
     {
         if (regenerate)
         {
@@ -175,9 +179,55 @@ public class Entropy
 
     // endregion
 
+    // region get word
+
+    public static int getBestGuessWord(List<Integer> fromList, int currentTry)
+    {
+        HashMap<Integer, Double> infoMap;
+
+        if (currentTry == 1) {
+            infoMap = getEntropyMapTotal();
+        } else {
+            infoMap = calcInfoMap(fromList);
+        }
+
+        int bestWordId = -1;
+        double bestScore = -1;
+
+        for (int i = 0; i < fromList.size(); i++) {
+            int wordId = fromList.get(i);
+            double info = infoMap.get(wordId);
+
+            double score = getScore(wordId, infoMap, fromList, currentTry);
+
+            if(score > bestScore)
+            {
+                bestWordId = wordId;
+                bestScore = info;
+            }
+
+        }
+
+        return bestWordId;
+    }
+
+    public static Double getScore(int wordId, HashMap<Integer, Double> infoMap, List<Integer> fromList, int currentTry)
+    {
+        double score = 0;
+
+        double p = Word.getWordFrequency(wordId);
+        double info = infoMap.get(wordId);
+        double leftInfo = MathHelper.safeLog2((double)fromList.size());
+
+        score = p + info;
+
+        return score;
+    }
+
+    // endregion
+
     public static void main(String[] args)
     {
-        loadInfoMap(false);
     }
 
 }

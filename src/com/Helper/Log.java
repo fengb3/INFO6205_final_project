@@ -51,14 +51,19 @@ public class Log
         }
     }
 
-    public static void GreenBlock(Object o)
+    public static String GreenBlock(Object o)
     {
         if (isDebug)
         {
-            System.out.print(ConsoleColorTextBuilder.with(o.toString())
-                                     .background(ConsoleColorTextBuilder.Color.GREEN)
-                                     .build());
+            String s = ConsoleColorTextBuilder.with(o.toString())
+                    .background(ConsoleColorTextBuilder.Color.GREEN)
+                    .build();
+            System.out.print(s);
+
+            return s;
         }
+
+        return "";
     }
 
     public static void YellowBlock(Object o)
@@ -103,23 +108,65 @@ public class Log
         System.out.flush();
     }
 
+    private static StringBuilder _sb = new StringBuilder();
+
     public static void ProgressBar(String message, int current, int total)
     {
-
         if (isDebug)
         {
-            int barLength = 20;
+            int barLength = 50;
 
             int percent = (int) ((double) current / total * 100);
 
-            System.out.print("\r" + message + " (" + current + "/" + total + ") " + percent + "% |");
+            _sb.setLength(0);
 
-            for (int i = 0; i < barLength * percent / 100; i++)
+            _sb.append("\r" + message + " (" + current + "/" + total + ") " + percent + "% |");
+
+            for (int i = 0; i < barLength; i++)
             {
-                Log.CyanBlock(" ");
+                if(i < (int) (barLength * (percent / 100.0)))
+                {
+                    _sb.append(getCyanBlockText(" "));
+                }
+                else
+                {
+                    _sb.append(getGrayBlockText(" "));
+                }
             }
 
+            _sb.append("|");
+
+            System.out.print(_sb);
+
         }
+    }
+
+    public static String getGreenBlockText(Object o)
+    {
+        return ConsoleColorTextBuilder.with(o.toString())
+                .background(ConsoleColorTextBuilder.Color.GREEN)
+                .build();
+    }
+
+    public static String getYellowBlockText(Object o)
+    {
+        return ConsoleColorTextBuilder.with(o.toString())
+                .background(ConsoleColorTextBuilder.Color.YELLOW)
+                .build();
+    }
+
+    public static String getGrayBlockText(Object o)
+    {
+        return ConsoleColorTextBuilder.with(o.toString())
+                .background(ConsoleColorTextBuilder.Color.GRAY)
+                .build();
+    }
+
+    public static String getCyanBlockText(Object o)
+    {
+        return ConsoleColorTextBuilder.with(o.toString())
+                .background(ConsoleColorTextBuilder.Color.CYAN)
+                .build();
     }
 }
 

@@ -3,6 +3,7 @@ package com.UI;
 import com.Helper.MathHelper;
 import com.Helper.StringHelper;
 import com.Wordle.Const;
+import com.Wordle.Hacker.Benchmark;
 import com.Wordle.Hacker.Entropy;
 import com.Wordle.Hacker.Pattern;
 import com.Wordle.Word;
@@ -24,18 +25,6 @@ public class WindowHacker extends JFrame
     private JPanel tableContainer;
     private JPanel panelLabelPossContainer;
     private JPanel panelLabelBitsContainer;
-    //    private JLabel labelPoss0;
-//    private JLabel labelPoss1;
-//    private JLabel labelPoss2;
-//    private JLabel labelPoss3;
-//    private JLabel labelPoss4;
-//    private JLabel labelPoss5;
-//    private JLabel labelBits0;
-//    private JLabel labelBits1;
-//    private JLabel labelBits3;
-//    private JLabel labelBits2;
-//    private JLabel labelBits4;
-//    private JLabel labelBits5;
 
     JTable _tableEntropy;
 
@@ -99,18 +88,28 @@ public class WindowHacker extends JFrame
     {
         clearTable();
 
-        List<Map.Entry<Integer, Double>> list = new LinkedList<>(infoMap.entrySet());
+//        List<Map.Entry<Integer, Double>> list = new LinkedList<>(infoMap.entrySet());
 
-        list.sort((o1, o2) -> (o2.getValue()).compareTo(o1.getValue()));
+        List<TableItemData> list = new ArrayList<>();
 
-        String[] columnNames = {"Top pick", "E [info]"};
-        Object[][] data = new Object[num][2];
+        for(Map.Entry<Integer, Double> entry : infoMap.entrySet())
+        {
+            TableItemData
+                    item = new TableItemData(entry.getKey(), entry.getValue(), Word.getWordFrequency(entry.getKey()));
+            list.add(item);
+        }
+
+        list.sort(TableItemData::compareTo);
+
+        String[] columnNames = {"Top pick", "E [info]", "P"};
+        Object[][] data = new Object[num][3];
 
         for (int i = 0; i < Math.min(num, list.size()); i++)
         {
-            String word = Word.getWord(list.get(i).getKey());
+            String word = Word.getWord(list.get(i).wordId);
             data[i][0] = word;
-            data[i][1] = StringHelper.format(list.get(i).getValue(), 3);
+            data[i][1] = StringHelper.format(list.get(i).info, 3);
+            data[i][2] = StringHelper.format(list.get(i).freq, 3);
         }
 
         _tableEntropy = new JTable(new DefaultTableModel(data, columnNames));
@@ -125,9 +124,9 @@ public class WindowHacker extends JFrame
 
         // put all from list to _currentWordIds
         _currentWordIds = new ArrayList<>();
-        for (Map.Entry<Integer, Double> entry : list)
+        for (TableItemData item: list)
         {
-            _currentWordIds.add(entry.getKey());
+            _currentWordIds.add(item.wordId);
         }
 
         int count = _currentWordIds.size();
@@ -187,6 +186,37 @@ public class WindowHacker extends JFrame
 
     private void benchmark()
     {
+        Benchmark.Run();
+    }
+
+    public class TableItemData implements Comparable<TableItemData>
+    {
+        public int wordId;
+        public double info;
+        public double freq;
+
+        public TableItemData(int wordId, double info, double freq)
+        {
+            this.wordId = wordId;
+            this.info = info;
+            this.freq = freq;
+        }
+
+        @Override
+        public int compareTo(TableItemData t)
+        {
+            if(this.info + this.freq > t.info + t.freq)
+                return -1;
+            else if(this.info + this.freq < t.info + t.freq)
+                return 1;
+            else
+                return 0;
+        }
+
+        public double GetScore()
+        {
+            return this.info + this.freq;
+        }
     }
 
 

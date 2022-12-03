@@ -256,6 +256,7 @@ public class Pattern
 
                 Log.ProgressBar("Saving pattern matrix to file", i, _patternMatrix.length);
             }
+            bw.close();
             Log.ClearConsole();
         }
         catch (IOException e)
@@ -290,6 +291,8 @@ public class Pattern
 
                 Log.ProgressBar("Reading pattern matrix", lineCount, len);
             }
+
+            br.close();
             Log.ClearConsole();
 
         }
