@@ -137,7 +137,6 @@ public class Log
             _sb.append("|");
 
             System.out.print(_sb);
-
         }
     }
 

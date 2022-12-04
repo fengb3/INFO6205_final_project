@@ -186,7 +186,7 @@ public class WindowHacker extends JFrame
 
     private void benchmark()
     {
-        Benchmark.Run();
+        Benchmark.run();
     }
 
     public class TableItemData implements Comparable<TableItemData>

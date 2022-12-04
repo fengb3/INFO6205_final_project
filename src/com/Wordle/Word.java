@@ -29,6 +29,26 @@ public class Word
         return _allWords;
     }
 
+    public static List<Integer> getAllWordIds()
+    {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < getAllWords().size(); i++)
+        {
+            result.add(i);
+        }
+        return result;
+    }
+
+    public static List<Integer> getPossibleWordIds()
+    {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < getAllPossibleWords().size(); i++)
+        {
+            result.add(getId(getAllPossibleWords().get(i)));
+        }
+        return result;
+    }
+
     public static List<String> getAllPossibleWords()
     {
         if (_possibleWords == null)
@@ -133,7 +153,6 @@ public class Word
 
     // endregion
 
-
     // region Word Frequency
 
     public static HashMap<Integer, Double> _wordFrequencyMap;
@@ -206,4 +225,5 @@ public class Word
     }
 
     // endregion
+
 }

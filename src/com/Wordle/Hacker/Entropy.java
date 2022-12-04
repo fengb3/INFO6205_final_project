@@ -181,8 +181,13 @@ public class Entropy
 
     // region get word
 
-    public static int getBestGuessWord(List<Integer> fromList, int currentTry)
+    public static int getBestGuessWord(List<Integer> fromList, int currentTry, int forceStartWordId)
     {
+        if(forceStartWordId != -1 && currentTry == 1)
+        {
+            return forceStartWordId;
+        }
+
         HashMap<Integer, Double> infoMap;
 
         if (currentTry == 1) {
@@ -226,8 +231,132 @@ public class Entropy
 
     // endregion
 
+    // region entropy 2 steps
+
+    public static double calcInformationAtSecondSteps(int wordId)
+    {
+        List<Integer> wordIds = Word.getAllWordIds();
+
+        double maxInfo = -1;
+        int maxInfoWordId = -1;
+
+        List<Short> patternIds = Pattern.getAllPatternIds();
+
+        for(short patternId : patternIds)
+        {
+            List<Integer> fromList = Pattern.getWordsMatchPatternByLookUp(wordId, patternId, wordIds);
+            double currInfo = calcInfo(wordId, fromList);
+
+            if(currInfo > maxInfo)
+            {
+                maxInfo = currInfo;
+                maxInfoWordId = patternId;
+            }
+        }
+
+        return maxInfo;
+    }
+
+    public static HashMap<Integer, Double> calcInformation2Steps()
+    {
+        HashMap<Integer, Double> result = new HashMap<>();
+
+        HashMap<Integer, Double> infoMap = getEntropyMapTotal();
+
+        int i = 0;
+        for(Map.Entry<Integer, Double> entry : infoMap.entrySet())
+        {
+            i++;
+            int wordId = entry.getKey();
+            double fistStepInfo = entry.getValue();
+            double secondStepInfo = calcInformationAtSecondSteps(wordId);
+            result.put(wordId, fistStepInfo + secondStepInfo);
+            Log.ProgressBar("Calculating information 2 steps", i, infoMap.size());
+        }
+        Log.ClearConsole();
+
+        return result;
+    }
+
+    public static void writeTopBeginnersToFile(int tops)
+    {
+        HashMap<Integer, Double> infoMap2steps = calcInformation2Steps();
+
+        List<Map.Entry<Integer,Double>> sortedList = new ArrayList<>(infoMap2steps.entrySet());
+
+        sortedList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+
+        try
+        {
+            FileOutputStream fis = new FileOutputStream(Const.PATH_TOP_BEGINNERS);
+            OutputStreamWriter osw = new OutputStreamWriter(fis);
+            BufferedWriter bw = new BufferedWriter(osw);
+
+            int total = tops;
+            int i = 0;
+
+            for(Map.Entry<Integer, Double> entry: sortedList)
+            {
+                int id = entry.getKey();
+                double entropy = entry.getValue();
+
+                bw.write(id + "," + entropy);
+                bw.newLine();
+
+                Log.ProgressBar("Saving top 25 beginners", i, total);
+                i++;
+
+                if(i >= total)
+                {
+                    break;
+                }
+            }
+
+            bw.close();
+            Log.ClearConsole();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Integer> readTopBeginnersFromFile()
+    {
+        List<Integer> result = new ArrayList<>();
+
+        try
+        {
+            FileInputStream fis = new FileInputStream(Const.PATH_TOP_BEGINNERS);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+
+            String line;
+            int i = 0;
+
+            while ((line = br.readLine()) != null)
+            {
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[0]);
+                result.add(id);
+
+                Log.ProgressBar("Reading top beginner words", i, 25);
+                i++;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    // endregion
+
     public static void main(String[] args)
     {
+        writeTopBeginnersToFile(50);
     }
 
 }

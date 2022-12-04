@@ -84,6 +84,22 @@ public class Pattern
         return -1;
     }
 
+    public static List<Short> getAllPatternIds()
+    {
+        if (_patternMap == null)
+        {
+            createPatternMap();
+        }
+
+        List<Short> result = new ArrayList<>();
+        for (short i = 0; i < _patternMap.size(); i++)
+        {
+            result.add(i);
+        }
+
+        return result;
+    }
+
     // endregion
 
     // region pattern check

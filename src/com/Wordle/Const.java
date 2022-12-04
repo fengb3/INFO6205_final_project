@@ -17,9 +17,9 @@ public class Const
     public static final String PATH_INFO_MAP = "data/entropy_map.txt";
     public static final String PATH_PATTEN_MATRIX = "data/patten_matrix.txt";
     public static final String PATH_POSSIBLE_WORD = "data/possible_words.txt";
+    public static final String PATH_TOP_BEGINNERS = "data/top_beginners.txt";
 
-
-
+    public static final String PATH_TOP_BEGINNERS_BENCHMARK = "data/top_beginners_benchmark_";
 
     public static final String PATH_WORD_FREQ = "data/words_freq.txt";
 
@@ -42,5 +42,4 @@ public class Const
     public static final int WORD_LENGTH = 5;
     public static final int WORD_TRIES = 6;
     public static final Color[] COLORS = new Color[]{DarkGreen, Yellow, Gray, White};
-
 }
