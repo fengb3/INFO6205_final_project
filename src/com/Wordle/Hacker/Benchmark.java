@@ -4,10 +4,7 @@ import com.Helper.Log;
 import com.Wordle.Const;
 import com.Wordle.Word;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,7 +126,7 @@ public class Benchmark {
     public static void saveBenchmarkToFile() {
         try {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM_dd_HH_mm_ss");
-            String fileName = "data\\benchmark_" + dtf.format(java.time.LocalDateTime.now()) + ".txt";
+            String fileName = "data" + File.separator + "benchmark_" + dtf.format(java.time.LocalDateTime.now()) + ".txt";
             FileOutputStream fos = new FileOutputStream(fileName);
             OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
             BufferedWriter bw = new BufferedWriter(osw);
