@@ -5,6 +5,7 @@ import com.Wordle.Const;
 import com.Wordle.Word;
 
 import java.io.*;
+import java.lang.reflect.GenericDeclaration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -336,6 +337,15 @@ public class Pattern
 
     public static void main(String[] args)
     {
-        loadPatternMatrix(false);
+//        // start timing
+//        long startTime = System.currentTimeMillis();
+
+        loadPatternMatrix(true);
+
+//        // end timing
+//        long endTime = System.currentTimeMillis();
+//
+//        // print out the time taken
+//        System.out.println("Time taken: " + (endTime - startTime) + "ms");
     }
 }

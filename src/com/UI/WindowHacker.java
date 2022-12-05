@@ -101,7 +101,7 @@ public class WindowHacker extends JFrame
             for (int i = 0; i < bestBeginners.size(); i++)
             {
                 int id = bestBeginners.get(i);
-                list.add(new TableItemData(id, infoMap.get(id), i + 1));
+                list.add(new TableItemData(id, infoMap.get(id), Word.getWordFrequency(id)));
             }
         }
         // else get from rest of the word and sort them by entropy

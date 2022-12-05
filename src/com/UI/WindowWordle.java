@@ -6,6 +6,7 @@ import com.Wordle.Word;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 
 public class WindowWordle extends JFrame
 {
@@ -41,6 +42,7 @@ public class WindowWordle extends JFrame
         resetButton.addActionListener(e -> reset());
 
         wordleHackerButton.addActionListener(e -> runHacker());
+
     }
 
     private void reset()

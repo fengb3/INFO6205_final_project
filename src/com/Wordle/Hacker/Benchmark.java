@@ -64,7 +64,7 @@ public class Benchmark {
 
         // HashMap<Double, Integer> currUncertaintyMap = new HashMap<>();
 
-        sb.append("\t");
+        sb.append("\n\t");
         sb.append(Word.getWord(wordId));
         sb.append("\n");
 

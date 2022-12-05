@@ -221,7 +221,7 @@ public class Entropy
         double info = infoMap.get(wordId);
         double leftInfo = MathHelper.safeLog2((double)fromList.size());
 
-        score = p + info;
+        score = info;
 
         return score;
     }
