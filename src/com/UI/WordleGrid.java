@@ -1,5 +1,6 @@
 package com.UI;
 
+import com.Helper.Log;
 import com.Wordle.Const;
 
 import javax.swing.*;
@@ -100,6 +101,29 @@ public class WordleGrid extends JPanel
             text += textField.getText();
         }
         return text;
+    }
+
+    public void setCurrentRowTextAndPattern(String text, int[] pattern)
+    {
+        if(text.length() != Const.WORD_LENGTH)
+        {
+            Log.Error("WordleGrid.setCurrentRowTextAndPattern: text length is not " + Const.WORD_LENGTH);
+            return;
+        }
+
+        if(pattern.length != Const.WORD_LENGTH)
+        {
+            Log.Error("WordleGrid.setCurrentRowTextAndPattern: pattern length is not " + Const.WORD_LENGTH);
+            return;
+        }
+
+        for (int i = 0; i < Const.WORD_LENGTH; i++)
+        {
+            String key = _currentRow + "_" + i;
+            WordleGridTextField textField = _textFields.get(key);
+            textField.setText(text.substring(i, i + 1));
+            textField.setCurrentGuessStatus(pattern[i]);
+        }
     }
 
     public void activeNextRow()

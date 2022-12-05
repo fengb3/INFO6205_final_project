@@ -6,10 +6,7 @@ import com.Wordle.Const;
 import com.Wordle.Word;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Entropy
 {
@@ -348,6 +345,52 @@ public class Entropy
         {
             e.printStackTrace();
         }
+
+        return result;
+    }
+
+    public static HashMap<Integer, Double> readTopBenchmarkBeginners()
+    {
+        HashMap<Integer, Double> result = new HashMap<>();
+
+        try
+        {
+            FileInputStream fis = new FileInputStream(Const.PATH_TOP_BEGINNERS_BENCHMARK_FULL);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+
+            String line;
+            int i = 0;
+
+            while((line = br.readLine()) != null)
+            {
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[1]);
+                double step = Double.parseDouble(parts[2]);
+                result.put(id, step);
+
+                Log.ProgressBar("Reading top benchmark beginner words", i, 25);
+                i++;
+            }
+
+            return result;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static List<Integer> getTopBeginners()
+    {
+
+        HashMap<Integer, Double> topBeginners = readTopBenchmarkBeginners();
+
+        List<Integer> result = new ArrayList<>(topBeginners.keySet());
+
+        result.sort(Comparator.comparing(topBeginners::get));
 
         return result;
     }

@@ -88,18 +88,33 @@ public class WindowHacker extends JFrame
     {
         clearTable();
 
-//        List<Map.Entry<Integer, Double>> list = new LinkedList<>(infoMap.entrySet());
+        _currentWordIds = new ArrayList<>(infoMap.keySet());
+
 
         List<TableItemData> list = new ArrayList<>();
 
-        for(Map.Entry<Integer, Double> entry : infoMap.entrySet())
+        // if it is first step, get best beginner
+        if(_wordleGrid.getCurrentRow() == 0)
         {
-            TableItemData
-                    item = new TableItemData(entry.getKey(), entry.getValue(), Word.getWordFrequency(entry.getKey()));
-            list.add(item);
-        }
+            List<Integer> bestBeginners = Entropy.getTopBeginners();
 
-        list.sort(TableItemData::compareTo);
+            for (int i = 0; i < bestBeginners.size(); i++)
+            {
+                int id = bestBeginners.get(i);
+                list.add(new TableItemData(id, infoMap.get(id), i + 1));
+            }
+        }
+        // else get from rest of the word and sort them by entropy
+        else
+        {
+            for(Map.Entry<Integer, Double> entry : infoMap.entrySet())
+            {
+                TableItemData
+                        item = new TableItemData(entry.getKey(), entry.getValue(), Word.getWordFrequency(entry.getKey()));
+                list.add(item);
+            }
+            list.sort(TableItemData::compareTo);
+        }
 
         String[] columnNames = {"Top pick", "E [info]", "P"};
         Object[][] data = new Object[num][3];
@@ -122,17 +137,13 @@ public class WindowHacker extends JFrame
         _tableEntropy.setFont(new Font("Arial", Font.PLAIN, 20));
         _tableEntropy.getTableHeader().setFont(new Font("Arial", Font.BOLD, 20));
 
-        // put all from list to _currentWordIds
-        _currentWordIds = new ArrayList<>();
-        for (TableItemData item: list)
-        {
-            _currentWordIds.add(item.wordId);
-        }
 
         int count = _currentWordIds.size();
 
         _labelPoss.get(_wordleGrid.getCurrentRow())
                 .setText(count+ " possibilities, " + StringHelper.format(MathHelper.safeLog2((double)count),2) + " bits");
+
+
     }
 
     public void clearTable()
@@ -142,14 +153,21 @@ public class WindowHacker extends JFrame
         tableContainer.revalidate();
     }
 
+
+    public WordleGrid getWordleGrid()
+    {
+        return _wordleGrid;
+    }
+
     public void reset()
     {
         clearTable();
         _labelPoss.forEach(label -> label.setText(""));
         _labelBits.forEach(label -> label.setText(""));
-        setTableWordList(50, Entropy.getEntropyMapTotal());
+//        setTableWordList(50, Entropy.getEntropyMapTotal());
         _wordleGrid.activeRow(0);
         _wordleGrid.clear();
+        setTableWordList(50, Entropy.getEntropyMapTotal());
 
     }
 
@@ -170,6 +188,12 @@ public class WindowHacker extends JFrame
 
         int patternId = Pattern.getPatternIdByPattern(pattern);
 
+        if(patternId == -1)
+        {
+            JOptionPane.showMessageDialog(null, "Invalid pattern");
+            return;
+        }
+
         List<Integer> newWordList = Pattern.getWordsMatchPatternByLookUp(guessId, patternId, _currentWordIds);
 
         double reduce = (double) newWordList.size() / _currentWordIds.size();
@@ -180,8 +204,6 @@ public class WindowHacker extends JFrame
         _wordleGrid.activeNextRow();
 
         setTableWordList(50, Entropy.calcInfoMap(newWordList));
-
-
     }
 
     private void benchmark()

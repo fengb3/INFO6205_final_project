@@ -16,6 +16,8 @@ public class WindowWordle extends JFrame
     private JPanel panelMain;
     private WordleGrid wordleGrid;
 
+    private WindowHacker _windowHacker;
+
     private int currentWordId;
 
     public WindowWordle()
@@ -48,6 +50,11 @@ public class WindowWordle extends JFrame
 
         currentWordId = Word.getRandomWordId();
         Log.Println("Current word" + currentWordId + "-" + Word.getWord(currentWordId));
+
+        if(_windowHacker != null)
+        {
+            _windowHacker.reset();
+        }
     }
 
     private void submit()
@@ -70,11 +77,18 @@ public class WindowWordle extends JFrame
         wordleGrid.setCurrentRowPattern(pattern);
         wordleGrid.activeNextRow();
         Log.Println("Guess: " + guess);
+
+        if(_windowHacker != null)
+        {
+            _windowHacker.getWordleGrid().setCurrentRowTextAndPattern(guess,pattern);
+            _windowHacker.submit();
+        }
     }
 
     private void runHacker()
     {
-        new WindowHacker();
+        reset();
+        _windowHacker = new WindowHacker();
     }
 
 

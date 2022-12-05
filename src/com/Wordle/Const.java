@@ -21,6 +21,8 @@ public class Const
 
     public static final String PATH_TOP_BEGINNERS_BENCHMARK = "data/top_beginners_benchmark_";
 
+    public static final String PATH_TOP_BEGINNERS_BENCHMARK_FULL = "data/top_beginners_benchmark.txt";
+
     public static final String PATH_WORD_FREQ = "data/words_freq.txt";
 
     public static final String PATH_BENCHMARK = "data/_benchmark.txt";
