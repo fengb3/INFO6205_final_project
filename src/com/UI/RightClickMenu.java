@@ -1,9 +1,7 @@
 package com.UI;
 
-import com.Wordle.Const;
 import com.Wordle.Hacker.GuessStatus;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class RightClickMenu extends PopupMenu

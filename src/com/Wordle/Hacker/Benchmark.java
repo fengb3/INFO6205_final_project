@@ -228,7 +228,7 @@ public class Benchmark {
     // endregion
 
     public static void main(String[] args) {
-        runForceStart();
-        // run();
+//        runForceStart();
+         run();
     }
 }

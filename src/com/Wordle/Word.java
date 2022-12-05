@@ -1,6 +1,6 @@
 package com.Wordle;
 
-import com.ArrayHelper;
+import com.Helper.ArrayHelper;
 import com.Helper.Log;
 import com.Helper.MathHelper;
 
@@ -202,7 +202,7 @@ public class Word
             int xWidth = Const.WIDTH_UNDER_SIGMOID;
             double c = xWidth *(-0.5 + (double) Const.SIGMOID_CENTRE / size);
 
-            double[] xs = ArrayHelper.linspace(c - (double) xWidth / 2, c + (double) xWidth / 2, size);
+            double[] xs = ArrayHelper.lineSpace(c - (double) xWidth / 2, c + (double) xWidth / 2, size);
 
             for(int j = 0; j < size; j++)
             {

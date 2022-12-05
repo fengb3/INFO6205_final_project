@@ -1,9 +1,7 @@
 import com.UI.WindowWordle;
 import com.Wordle.Const;
-import com.Wordle.Hacker.Benchmark;
 import com.Wordle.Hacker.Entropy;
 import com.Wordle.Hacker.Pattern;
-import com.Wordle.Word;
 
 import java.io.File;
 
@@ -11,16 +9,9 @@ public class Main
 {
     public static void main(String[] args)
     {
-//        new Thread(() -> CheckFiles()).start();
-
         CheckFiles();
 
-        // Benchmark.Run();
-
         new WindowWordle();
-
-//        Word.getWordFrequency(0);
-
     }
 
     private static void CheckFiles()
