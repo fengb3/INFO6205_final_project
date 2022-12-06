@@ -58,4 +58,4 @@ Steps on playing this game when using Wordle and Hacker
 
 ![Alt text](./img/steps/step_5.png)
 
-4. Keep typing the guess words to get the all green pattern.
+4. Keep tring words to get the all green pattern.
