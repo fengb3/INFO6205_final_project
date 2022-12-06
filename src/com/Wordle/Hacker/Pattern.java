@@ -135,7 +135,7 @@ public class Pattern
      * 1 means the letter is in the answer but in the wrong position
      * 2 means the letter is not in the answer
      */
-    private static int[] checkPatternByCompare(String word, String wordToCheck)
+    public static int[] checkPatternByCompare(String word, String wordToCheck)
     {
         int[] result = new int[5];
 
@@ -192,7 +192,7 @@ public class Pattern
      * @param wordToCheck id of the word supposed to be the guess
      * @return the pattern id to look up in the pattern matrix
      */
-    private static short checkPatternIdByCompare(String word, String wordToCheck)
+    public static short checkPatternIdByCompare(String word, String wordToCheck)
     {
         int[] pattern = checkPatternByCompare(word, wordToCheck);
         return getPatternIdByPattern(pattern);
