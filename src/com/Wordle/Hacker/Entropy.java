@@ -13,6 +13,12 @@ public class Entropy
 
     // region information
 
+    /**
+     * calculates the entropy for each word in the wordlist
+     *
+     * @param fromList the list of words to calculate the entropy for
+     * @return a map with the wordId as key and the entropy as value
+     */
     public static HashMap<Integer, Double> calcInfoMap(List<Integer> fromList)
     {
         HashMap<Integer, Double> result = new HashMap<>();
@@ -30,27 +36,38 @@ public class Entropy
         return result;
     }
 
+    /**
+     * calculates the entropy for a single word in a given wordlist
+     *
+     * @param wordId   the word to calculate the entropy for
+     * @param fromList the list of words to calculate the entropy for
+     * @return the entropy of the word
+     */
     private static double calcInfo(int wordId, List<Integer> fromList)
     {
         double info = 0;
 
-        short totalPatternNums = (short) Math.pow(3, 5);
+        HashMap<Short, Integer> matchesPattern = new HashMap<>();
 
-        for(short patternId = 0; patternId < totalPatternNums; patternId++)
+        for (int i = 0; i < fromList.size(); i++)
         {
-            int wordsCountMatches = 0;
+            short patternId = Pattern.checkPatternIdByLookUp(wordId, fromList.get(i));
 
-            for(int toCheckWordId : fromList)
+            if (matchesPattern.containsKey(patternId))
             {
-                if(Pattern.isMatchPatternByLookUp(wordId, toCheckWordId, patternId))
-                {
-                    wordsCountMatches++;
-                }
+                matchesPattern.put(patternId, matchesPattern.get(patternId) + 1);
             }
+            else
+            {
+                matchesPattern.put(patternId, 1);
+            }
+        }
 
-            double p = (double) wordsCountMatches / fromList.size();
+        for(Map.Entry<Short, Integer> entry : matchesPattern.entrySet())
+        {
+            double p = (double) entry.getValue() / fromList.size(); // calculate the probability of the pattern
 
-            if(p == 0)
+            if (p == 0)
             {
                 continue;
             }
@@ -69,7 +86,7 @@ public class Entropy
 
     public static HashMap<Integer, Double> getEntropyMapTotal()
     {
-        if(_infoMapTotal == null)
+        if (_infoMapTotal == null)
         {
             loadInfoMap(false);
         }
@@ -92,7 +109,7 @@ public class Entropy
 
     static void saveInfoMapTotal()
     {
-        if(_infoMapTotal == null)
+        if (_infoMapTotal == null)
         {
             _infoMapTotal = calcInfoMapTotal();
         }
@@ -106,7 +123,7 @@ public class Entropy
             int total = _infoMapTotal.size();
             int i = 0;
 
-            for(Map.Entry<Integer, Double> entry: _infoMapTotal.entrySet())
+            for (Map.Entry<Integer, Double> entry : _infoMapTotal.entrySet())
             {
                 int id = entry.getKey();
                 double entropy = entry.getValue();
@@ -180,29 +197,33 @@ public class Entropy
 
     public static int getBestGuessWord(List<Integer> fromList, int currentTry, int forceStartWordId)
     {
-        if(forceStartWordId != -1 && currentTry == 1)
+        if (forceStartWordId != -1 && currentTry == 1)
         {
             return forceStartWordId;
         }
 
         HashMap<Integer, Double> infoMap;
 
-        if (currentTry == 1) {
+        if (currentTry == 1)
+        {
             infoMap = getEntropyMapTotal();
-        } else {
+        }
+        else
+        {
             infoMap = calcInfoMap(fromList);
         }
 
         int bestWordId = -1;
         double bestScore = -1;
 
-        for (int i = 0; i < fromList.size(); i++) {
+        for (int i = 0; i < fromList.size(); i++)
+        {
             int wordId = fromList.get(i);
             double info = infoMap.get(wordId);
 
             double score = getScore(wordId, infoMap, fromList, currentTry);
 
-            if(score > bestScore)
+            if (score > bestScore)
             {
                 bestWordId = wordId;
                 bestScore = info;
@@ -219,7 +240,7 @@ public class Entropy
 
         double p = Word.getWordFrequency(wordId);
         double info = infoMap.get(wordId);
-        double leftInfo = MathHelper.safeLog2((double)fromList.size());
+        double leftInfo = MathHelper.safeLog2((double) fromList.size());
 
         score = info;
 
@@ -239,12 +260,12 @@ public class Entropy
 
         List<Short> patternIds = Pattern.getAllPatternIds();
 
-        for(short patternId : patternIds)
+        for (short patternId : patternIds)
         {
             List<Integer> fromList = Pattern.getWordsMatchPatternByLookUp(wordId, patternId, wordIds);
             double currInfo = calcInfo(wordId, fromList);
 
-            if(currInfo > maxInfo)
+            if (currInfo > maxInfo)
             {
                 maxInfo = currInfo;
                 maxInfoWordId = patternId;
@@ -261,7 +282,7 @@ public class Entropy
         HashMap<Integer, Double> infoMap = getEntropyMapTotal();
 
         int i = 0;
-        for(Map.Entry<Integer, Double> entry : infoMap.entrySet())
+        for (Map.Entry<Integer, Double> entry : infoMap.entrySet())
         {
             i++;
             int wordId = entry.getKey();
@@ -279,7 +300,7 @@ public class Entropy
     {
         HashMap<Integer, Double> infoMap2steps = calcInformation2Steps();
 
-        List<Map.Entry<Integer,Double>> sortedList = new ArrayList<>(infoMap2steps.entrySet());
+        List<Map.Entry<Integer, Double>> sortedList = new ArrayList<>(infoMap2steps.entrySet());
 
         sortedList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
@@ -292,7 +313,7 @@ public class Entropy
             int total = tops;
             int i = 0;
 
-            for(Map.Entry<Integer, Double> entry: sortedList)
+            for (Map.Entry<Integer, Double> entry : sortedList)
             {
                 int id = entry.getKey();
                 double entropy = entry.getValue();
@@ -303,7 +324,7 @@ public class Entropy
                 Log.ProgressBar("Saving top 25 beginners", i, total);
                 i++;
 
-                if(i >= total)
+                if (i >= total)
                 {
                     break;
                 }
@@ -362,7 +383,7 @@ public class Entropy
             String line;
             int i = 0;
 
-            while((line = br.readLine()) != null)
+            while ((line = br.readLine()) != null)
             {
                 String[] parts = line.split(",");
                 int id = Integer.parseInt(parts[1]);

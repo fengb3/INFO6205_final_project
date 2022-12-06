@@ -1,12 +1,12 @@
 package com.UI;
 
 import com.Helper.Log;
+import com.Wordle.Const;
 import com.Wordle.Hacker.Pattern;
 import com.Wordle.Word;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 
 public class WindowWordle extends JFrame
 {
@@ -67,12 +67,26 @@ public class WindowWordle extends JFrame
 
         if(!Word.isValidWord(guess))
         {
+            JOptionPane.showMessageDialog(this, "Invalid word");
             Log.Println("Invalid word");
             return;
         }
 
         int guessWordId = Word.getId(guess);
         short patternId = Pattern.checkPatternIdByLookUp(currentWordId, guessWordId);
+
+        if(patternId == Pattern.AllCorrectPatternId)
+        {
+            JOptionPane.showMessageDialog(this, "You win");
+            Log.Println("you win");
+//            reset();
+//            return;
+        }
+        else if (wordleGrid.getCurrentRow() == Const.WORD_TRIES - 1)
+        {
+            JOptionPane.showMessageDialog(this, "You lose");
+            Log.Println("you lose");
+        }
 
         int[] pattern = Pattern.getPatternByPatternId(patternId);
 

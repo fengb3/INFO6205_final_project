@@ -5,7 +5,6 @@ import com.Wordle.Const;
 import com.Wordle.Word;
 
 import java.io.*;
-import java.lang.reflect.GenericDeclaration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +17,12 @@ public class Pattern
 
     public final static short AllCorrectPatternId = 0;
 
+    /**
+     * create all possible patterns for 2 words comparison
+     * save them into a map
+     * key is the id of the pattern
+     * value is a array with length of 5 represent the pattern
+     */
     public static void createPatternMap()
     {
         _patternMap = new HashMap<>();
@@ -51,6 +56,11 @@ public class Pattern
         }
     }
 
+    /**
+     * get the pattern id of the pattern
+     * @param index id of a pattern
+     * @return the pattern as an array
+     */
     public static int[] getPatternByPatternId(short index)
     {
         if (_patternMap == null)
@@ -61,6 +71,11 @@ public class Pattern
         return _patternMap.get(index);
     }
 
+    /**
+     * get the pattern id of a pattern
+     * @param pattern the pattern as an array
+     * @return the id of the pattern
+     */
     public static short getPatternIdByPattern(int[] pattern)
     {
         if (_patternMap == null)
@@ -85,6 +100,10 @@ public class Pattern
         return -1;
     }
 
+    /**
+     * get all pattern id
+     * @return a list of short represent the pattern id
+     */
     public static List<Short> getAllPatternIds()
     {
         if (_patternMap == null)
@@ -106,6 +125,16 @@ public class Pattern
     // region pattern check
 
     // region pattern check - by compare
+
+    /**
+     *  check 2 words to get their pattern
+     * @param word the word supposed to the answer
+     * @param wordToCheck the word supposed to be the guess
+     * @return an integer array with 5 elements, each element is 0, 1 or 2
+     * 0 means the letter is correct
+     * 1 means the letter is in the answer but in the wrong position
+     * 2 means the letter is not in the answer
+     */
     private static int[] checkPatternByCompare(String word, String wordToCheck)
     {
         int[] result = new int[5];
@@ -156,6 +185,13 @@ public class Pattern
         return result;
     }
 
+    /**
+     * check 2 words to get their pattern
+     *
+     * @param word id of the word supposed to the answer
+     * @param wordToCheck id of the word supposed to be the guess
+     * @return the pattern id to look up in the pattern matrix
+     */
     private static short checkPatternIdByCompare(String word, String wordToCheck)
     {
         int[] pattern = checkPatternByCompare(word, wordToCheck);
@@ -165,6 +201,13 @@ public class Pattern
 
     // region pattern check - by look up
 
+    /**
+     * check 2 words to get their pattern
+     *
+     * @param word1Id the word supposed to the answer
+     * @param word2Id the word supposed to be the guess
+     * @return the pattern id to look up in the pattern matrix
+     */
     public static short checkPatternIdByLookUp(int word1Id, int word2Id)
     {
         if (_patternMatrix == null)
@@ -175,20 +218,40 @@ public class Pattern
         return _patternMatrix[word1Id][word2Id];
     }
 
+    /**
+     * check 2 words to get their pattern
+     *
+     * @param word1 the word supposed to the answer
+     * @param word2 the word supposed to be the guess
+     * @return the pattern id to look up in the pattern matrix
+     */
     public static short checkPatternIdByLookUp(String word1, String word2)
     {
+        // get 2 words' id from the word list
         int word1Id = Word.getId(word1);
         int word2Id = Word.getId(word2);
 
         return checkPatternIdByLookUp(word1Id, word2Id);
     }
 
+    /**
+     * check 2 words to get their pattern
+     * @param word1Id id of the word supposed to the answer
+     * @param word2Id id of the word supposed to be the guess
+     * @return an integer array with 5 elements, each element is 0, 1 or 2
+     */
     public static int[] checkPatternByLookUp(int word1Id, int word2Id)
     {
         short patternId = checkPatternIdByLookUp(word1Id, word2Id);
         return getPatternByPatternId(patternId);
     }
 
+    /**
+     * check 2 words to get their pattern
+     * @param word1 the word supposed to the answer
+     * @param word2 the word supposed to be the guess
+     * @return an integer array with 5 elements, each element is 0, 1 or 2
+     */
     public static int[] checkPatternByLookUp(String word1, String word2)
     {
         int word1Id = Word.getId(word1);
@@ -197,12 +260,26 @@ public class Pattern
         return checkPatternByLookUp(word1Id, word2Id);
     }
 
+    /**
+     * check 2 words if they match the given pattern
+     * @param word1Id id of the word supposed to the answer
+     * @param word2Id id of the word supposed to be the guess
+     * @param patternId id of the pattern to check
+     * @return true if the 2 words match the pattern
+     */
     public static boolean isMatchPatternByLookUp(int word1Id, int word2Id, int patternId)
     {
         short patternIdToCheck = checkPatternIdByLookUp(word1Id, word2Id);
         return patternIdToCheck == patternId;
     }
 
+    /**
+     * check 2 words if they match the given pattern
+     * @param word2Id id of the word supposed to be the guess
+     * @param patternId id of the pattern to check
+     * @param fromList list of words possible to be the answer
+     * @return a list of word ids that match the pattern
+     */
     public static List<Integer> getWordsMatchPatternByLookUp(int word2Id,int patternId, List<Integer> fromList)
     {
         List<Integer> result = new ArrayList<>();
@@ -224,8 +301,14 @@ public class Pattern
 
     // region Pattern Matrix
 
+    /**
+     * a matrix to store the pattern id each pair of 2 words
+     */
     static short[][] _patternMatrix;
 
+    /**
+     *  create a matrix by looping through all the words
+     */
     static void createPatternMatrix()
     {
         if (_patternMap == null)
@@ -250,6 +333,9 @@ public class Pattern
         Log.ClearConsole();
     }
 
+    /**
+     * save the pattern matrix to a file
+     */
     static void savePatternMatrixToFile()
     {
         if (_patternMatrix == null)
@@ -282,6 +368,9 @@ public class Pattern
         }
     }
 
+    /**
+     * reading the pattern matrix from a file
+     */
     static void readPatternMatrixFromFile()
     {
         List<String> words = Word.getAllWords();
@@ -320,6 +409,11 @@ public class Pattern
         }
     }
 
+    /**
+     * load the pattern matrix
+     * @param regenerate true : re-generate the matrix by looping through all the words and compare them to get the pattern id
+     *                   false : read the matrix from a file
+     */
     public static void loadPatternMatrix(boolean regenerate)
     {
         if (regenerate)
@@ -337,15 +431,7 @@ public class Pattern
 
     public static void main(String[] args)
     {
-//        // start timing
-//        long startTime = System.currentTimeMillis();
-
+        // regenerate manually
         loadPatternMatrix(true);
-
-//        // end timing
-//        long endTime = System.currentTimeMillis();
-//
-//        // print out the time taken
-//        System.out.println("Time taken: " + (endTime - startTime) + "ms");
     }
 }
